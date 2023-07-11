@@ -1,6 +1,80 @@
+definitions:
+  models.EsConfig:
+    properties:
+      addresses:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      version:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
+  /conf/get:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 获取es配置
+      tags:
+      - es配置
+  /conf/set:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: EsConfig
+        in: body
+        name: esConf
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.EsConfig'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 设置es配置
+      tags:
+      - es配置
+  /conf/use:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: EsConfig
+        in: body
+        name: esConf
+        required: true
+        schema:
+          $ref: '#/definitions/models.EsConfig'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 应用es配置
+      tags:
+      - es配置
   /index:
     get:
       consumes:

@@ -20,5 +20,7 @@ func Router() *gin.Engine {
 	r.GET("/index", service.GetIndex)
 	// 配置
 	r.GET("/conf/get", service.GetConfig)
+	r.POST("/conf/set", service.SetConfig)
+	r.POST("/conf/use", service.UseConfig)
 	return r
 }
