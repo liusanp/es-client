@@ -22,5 +22,7 @@ func Router() *gin.Engine {
 	r.GET("/conf/get", api.GetConfig)
 	r.POST("/conf/set", api.SetConfig)
 	r.POST("/conf/use", api.UseConfig)
+	// 查询
+	r.GET("/es/getMapping", api.GetMapping)
 	return r
 }

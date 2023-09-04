@@ -75,6 +75,20 @@ paths:
       summary: 应用es配置
       tags:
       - es配置
+  /es/getMapping:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 获取索引字段
+      tags:
+      - es查询
   /index:
     get:
       consumes:

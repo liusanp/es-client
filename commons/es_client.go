@@ -1,10 +1,12 @@
 package commons
 
 import (
+	"context"
 	"es-client/models"
 	"log"
 
 	ES7 "github.com/elastic/go-elasticsearch/v7"
+	ES7API "github.com/elastic/go-elasticsearch/v7/esapi"
 	ES8 "github.com/elastic/go-elasticsearch/v8"
 )
 
@@ -23,6 +25,7 @@ func InitESClient(esConfig *models.EsConfig) {
 			log.Fatalf("Error creating the client: %s", err)
 		}
 		ES7Client = es
+		ES8Client = nil
 	}
 	if esConfig.Version == 8 {
 		cfg := ES8.Config{
@@ -35,6 +38,7 @@ func InitESClient(esConfig *models.EsConfig) {
 			log.Fatalf("Error creating the client: %s", err)
 		}
 		ES8Client = es
+		ES7Client = nil
 	}
 }
 
@@ -55,4 +59,22 @@ func CheckESClient(version uint) {
 		defer res.Body.Close()
 		log.Println(res)
 	}
+}
+
+func GetIndexMapping() {
+	// 指定要获取字段映射的索引
+	indexName := "sq-yshj"
+
+	// 创建 IndicesGetFieldMapping 请求
+	req := ES7API.IndicesGetFieldMappingRequest{
+		Index: []string{indexName}, // 设置要获取字段映射的索引
+	}
+
+	res, err := req.Do(context.Background(), ES7Client)
+	
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+	defer res.Body.Close()
+	log.Println(res)
 }

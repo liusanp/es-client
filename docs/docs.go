@@ -106,6 +106,28 @@ const docTemplate = `{
                 }
             }
         },
+        "/es/getMapping": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es查询"
+                ],
+                "summary": "获取索引字段",
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/index": {
             "get": {
                 "consumes": [
