@@ -1,7 +1,7 @@
 package router
 
 import (
-	"es-client/service"
+	"es-client/api"
 
 	docs "es-client/docs"
 
@@ -17,10 +17,10 @@ func Router() *gin.Engine {
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	// 首页
-	r.GET("/index", service.GetIndex)
+	r.GET("/index", api.GetIndex)
 	// 配置
-	r.GET("/conf/get", service.GetConfig)
-	r.POST("/conf/set", service.SetConfig)
-	r.POST("/conf/use", service.UseConfig)
+	r.GET("/conf/get", api.GetConfig)
+	r.POST("/conf/set", api.SetConfig)
+	r.POST("/conf/use", api.UseConfig)
 	return r
 }

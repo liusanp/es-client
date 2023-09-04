@@ -1,4 +1,4 @@
-package service
+package api
 
 import (
 	"es-client/commons"

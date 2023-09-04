@@ -1,4 +1,10 @@
 app:
-    port: 8081
     es:
         conf:
+            - name: dev
+              addresses:
+                - http://192.168.1.231:9200
+              username: "elastic"
+              password: "123456"
+              version: 6
+    port: 8081
