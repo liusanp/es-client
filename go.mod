@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/elastic/go-elasticsearch/v7 v7.17.10
-	github.com/elastic/go-elasticsearch/v8 v8.8.2
+	github.com/elastic/go-elasticsearch/v8 v8.9.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/spf13/viper v1.16.0
 	github.com/swaggo/files v1.0.1

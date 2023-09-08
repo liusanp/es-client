@@ -5,5 +5,4 @@ type EsConfig struct {
 	Addresses []string
 	Username  string
 	Password  string
-	Version   uint
 }

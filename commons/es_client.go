@@ -2,63 +2,63 @@ package commons
 
 import (
 	"context"
+	"encoding/json"
 	"es-client/models"
+	"fmt"
 	"log"
 
-	ES7 "github.com/elastic/go-elasticsearch/v7"
-	ES7API "github.com/elastic/go-elasticsearch/v7/esapi"
-	ES8 "github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v7"
+	"github.com/elastic/go-elasticsearch/v7/esapi"
 )
 
-var ES7Client *ES7.Client
-var ES8Client *ES8.Client
+var es *elasticsearch.Client
 
 func InitESClient(esConfig *models.EsConfig) {
-	if esConfig.Version == 6 || esConfig.Version == 7 {
-		cfg := ES7.Config{
-			Addresses: esConfig.Addresses,
-			Username:  esConfig.Username,
-			Password:  esConfig.Password,
-		}
-		es, err := ES7.NewClient(cfg)
-		if err != nil {
-			log.Fatalf("Error creating the client: %s", err)
-		}
-		ES7Client = es
-		ES8Client = nil
+	cfg := elasticsearch.Config{
+		Addresses: esConfig.Addresses,
+		Username:  esConfig.Username,
+		Password:  esConfig.Password,
 	}
-	if esConfig.Version == 8 {
-		cfg := ES8.Config{
-			Addresses: esConfig.Addresses,
-			Username:  esConfig.Username,
-			Password:  esConfig.Password,
-		}
-		es, err := ES8.NewClient(cfg)
-		if err != nil {
-			log.Fatalf("Error creating the client: %s", err)
-		}
-		ES8Client = es
-		ES7Client = nil
+	client, err := elasticsearch.NewClient(cfg)
+	if err != nil {
+		log.Fatalf("Error creating the client: %s", err)
 	}
+	es = client
 }
 
-func CheckESClient(version uint) {
-	if version == 6 || version == 7 {
-		res, err := ES7Client.Info()
-		if err != nil {
-			log.Fatalf("Error getting response: %s", err)
-		}
-		defer res.Body.Close()
-		log.Println(res)
+// 解析 Elasticsearch 响应
+func decodeResponse(res *esapi.Response, target interface{}) error {
+	if res.IsError() {
+		return fmt.Errorf("Error response: %s", res.String())
 	}
-	if version == 8 {
-		res, err := ES8Client.Info()
-		if err != nil {
-			log.Fatalf("Error getting response: %s", err)
-		}
-		defer res.Body.Close()
-		log.Println(res)
+
+	err := json.NewDecoder(res.Body).Decode(target)
+	if err != nil {
+		return err
 	}
+
+	return nil
+}
+
+func CheckESClient() map[string]interface{} {
+	res, err := es.Info()
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+	defer res.Body.Close()
+
+	// 检查响应状态
+	if res.IsError() {
+		log.Fatalf("Error response: %s", res.String())
+	}
+
+	// 解析响应体
+	var responseBody map[string]interface{}
+	if err := decodeResponse(res, &responseBody); err != nil {
+		log.Fatalf("Error parsing response body: %s", err)
+	}
+
+	return responseBody
 }
 
 func GetIndexMapping() {
@@ -66,11 +66,11 @@ func GetIndexMapping() {
 	indexName := "sq-yshj"
 
 	// 创建 IndicesGetFieldMapping 请求
-	req := ES7API.IndicesGetFieldMappingRequest{
+	req := esapi.IndicesGetFieldMappingRequest{
 		Index: []string{indexName}, // 设置要获取字段映射的索引
 	}
 
-	res, err := req.Do(context.Background(), ES7Client)
+	res, err := req.Do(context.Background(), es)
 	
 	if err != nil {
 		log.Fatalf("Error getting response: %s", err)

@@ -16,6 +16,5 @@ func run() {
 }
 
 func main() {
-	// run()
-	
+	run()
 }

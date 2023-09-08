@@ -64,10 +64,10 @@ func UseConfig(c *gin.Context) {
 	}
 	log.Println(esConf)
 	commons.InitESClient(&esConf)
-	commons.CheckESClient(esConf.Version)
+	info := commons.CheckESClient()
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  "应用配置成功",
-		"data": nil,
+		"data": info,
 	})
 }
