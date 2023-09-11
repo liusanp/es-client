@@ -21,7 +21,7 @@ func InitESClient(esConfig *models.EsConfig) {
 	}
 	client, err := elasticsearch.NewClient(cfg)
 	if err != nil {
-		log.Fatalf("Error creating the client: %s", err)
+		log.Printf("Error creating the client: %s", err)
 	}
 	es = client
 }
@@ -29,7 +29,7 @@ func InitESClient(esConfig *models.EsConfig) {
 // 解析 Elasticsearch 响应
 func decodeResponse(res *esapi.Response, target interface{}) error {
 	if res.IsError() {
-		return fmt.Errorf("Error response: %s", res.String())
+		return fmt.Errorf("error response: %s", res.String())
 	}
 
 	err := json.NewDecoder(res.Body).Decode(target)
@@ -43,19 +43,19 @@ func decodeResponse(res *esapi.Response, target interface{}) error {
 func CheckESClient() map[string]interface{} {
 	res, err := es.Info()
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		log.Printf("Error getting response: %s", err)
 	}
 	defer res.Body.Close()
 
 	// 检查响应状态
 	if res.IsError() {
-		log.Fatalf("Error response: %s", res.String())
+		log.Printf("Error response: %s", res.String())
 	}
 
 	// 解析响应体
 	var responseBody map[string]interface{}
 	if err := decodeResponse(res, &responseBody); err != nil {
-		log.Fatalf("Error parsing response body: %s", err)
+		log.Printf("Error parsing response body: %s", err)
 	}
 
 	return responseBody
@@ -68,18 +68,18 @@ func GetIndices() []string {
     )
 	
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		log.Printf("Error getting response: %s", err)
 	}
 	defer res.Body.Close()
 	// 检查响应状态
 	if res.IsError() {
-		log.Fatalf("Error response: %s", res.String())
+		log.Printf("Error response: %s", res.String())
 	}
 
 	// 解析响应体
 	var responseBody []map[string]interface{}
 	if err := decodeResponse(res, &responseBody); err != nil {
-		log.Fatalf("Error parsing response body: %s", err)
+		log.Printf("Error parsing response body: %s", err)
 	}
 
 	// 提取索引名称
@@ -101,18 +101,18 @@ func GetIndexMapping(indexName string) map[string]interface{} {
 	res, err := req.Do(context.Background(), es)
 	
 	if err != nil {
-		log.Fatalf("Error getting response: %s", err)
+		log.Printf("Error getting response: %s", err)
 	}
 	defer res.Body.Close()
 	// 检查响应状态
 	if res.IsError() {
-		log.Fatalf("Error response: %s", res.String())
+		log.Printf("Error response: %s", res.String())
 	}
 
 	// 解析响应体
 	var responseBody map[string]interface{}
 	if err := decodeResponse(res, &responseBody); err != nil {
-		log.Fatalf("Error parsing response body: %s", err)
+		log.Printf("Error parsing response body: %s", err)
 	}
 
 	return responseBody
