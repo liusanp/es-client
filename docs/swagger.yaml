@@ -11,8 +11,6 @@ definitions:
         type: string
       username:
         type: string
-      version:
-        type: integer
     type: object
 info:
   contact: {}
@@ -75,6 +73,20 @@ paths:
       summary: 应用es配置
       tags:
       - es配置
+  /es/getIndices:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 获取索引
+      tags:
+      - es查询
   /es/getMapping:
     get:
       consumes:

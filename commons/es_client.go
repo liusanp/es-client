@@ -61,12 +61,40 @@ func CheckESClient() map[string]interface{} {
 	return responseBody
 }
 
-func GetIndexMapping() {
-	// 指定要获取字段映射的索引
-	indexName := "sq-yshj"
+func GetIndices() []string {
+	// 执行获取所有索引的操作
+	res, err := es.Cat.Indices(
+        es.Cat.Indices.WithContext(context.Background()),
+    )
+	
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+	}
+	defer res.Body.Close()
+	// 检查响应状态
+	if res.IsError() {
+		log.Fatalf("Error response: %s", res.String())
+	}
 
+	// 解析响应体
+	var responseBody []map[string]interface{}
+	if err := decodeResponse(res, &responseBody); err != nil {
+		log.Fatalf("Error parsing response body: %s", err)
+	}
+
+	// 提取索引名称
+	var indexNames []string
+	for _, row := range responseBody {
+		indexName := row["index"].(string)
+		indexNames = append(indexNames, indexName)
+	}
+
+	return indexNames
+}
+
+func GetIndexMapping(indexName string) map[string]interface{} {
 	// 创建 IndicesGetFieldMapping 请求
-	req := esapi.IndicesGetFieldMappingRequest{
+	req := esapi.IndicesGetMappingRequest{
 		Index: []string{indexName}, // 设置要获取字段映射的索引
 	}
 
@@ -76,5 +104,16 @@ func GetIndexMapping() {
 		log.Fatalf("Error getting response: %s", err)
 	}
 	defer res.Body.Close()
-	log.Println(res)
+	// 检查响应状态
+	if res.IsError() {
+		log.Fatalf("Error response: %s", res.String())
+	}
+
+	// 解析响应体
+	var responseBody map[string]interface{}
+	if err := decodeResponse(res, &responseBody); err != nil {
+		log.Fatalf("Error parsing response body: %s", err)
+	}
+
+	return responseBody
 }

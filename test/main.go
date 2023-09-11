@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"

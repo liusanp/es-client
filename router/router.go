@@ -24,5 +24,6 @@ func Router() *gin.Engine {
 	r.POST("/conf/use", api.UseConfig)
 	// 查询
 	r.GET("/es/getMapping", api.GetMapping)
+	r.GET("/es/getIndices", api.GetIndices)
 	return r
 }

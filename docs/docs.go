@@ -106,6 +106,28 @@ const docTemplate = `{
                 }
             }
         },
+        "/es/getIndices": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es查询"
+                ],
+                "summary": "获取索引",
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/es/getMapping": {
             "get": {
                 "consumes": [
@@ -169,9 +191,6 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
-                },
-                "version": {
-                    "type": "integer"
                 }
             }
         }
