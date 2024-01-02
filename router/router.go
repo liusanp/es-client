@@ -1,7 +1,7 @@
 package router
 
 import (
-	"es-client/api"
+	"es-client/controller"
 
 	docs "es-client/docs"
 
@@ -17,13 +17,19 @@ func Router() *gin.Engine {
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	// 首页
-	r.GET("/index", api.GetIndex)
+	r.GET("/", controller.IndexController{}.GetIndex)
 	// 配置
-	r.GET("/conf/get", api.GetConfig)
-	r.POST("/conf/set", api.SetConfig)
-	r.POST("/conf/use", api.UseConfig)
+	confRoute := r.Group("/conf")
+	{
+		confRoute.GET("/get", controller.ConfController{}.GetConfig)
+		confRoute.POST("/set", controller.ConfController{}.SetConfig)
+		confRoute.POST("/use", controller.ConfController{}.UseConfig)
+	}
 	// 查询
-	r.GET("/es/getMapping", api.GetMapping)
-	r.GET("/es/getIndices", api.GetIndices)
+	esRoute := r.Group("/es")
+	{
+		esRoute.GET("/getMapping", controller.SearchController{}.GetMapping)
+		esRoute.GET("/getIndices", controller.SearchController{}.GetIndices)
+	}
 	return r
 }

@@ -15,6 +15,28 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "首页"
+                ],
+                "summary": "首页",
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/conf/get": {
             "get": {
                 "consumes": [
@@ -140,28 +162,6 @@ const docTemplate = `{
                     "es查询"
                 ],
                 "summary": "获取索引字段",
-                "responses": {
-                    "200": {
-                        "description": "code\",\"msg\",\"data\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/index": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "首页"
-                ],
-                "summary": "首页",
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",

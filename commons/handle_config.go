@@ -2,11 +2,13 @@ package commons
 
 import (
 	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
 
 func LoadConfig() {
+	os.Mkdir("config", 0666)
 	viper.SetConfigName("app")
 	viper.AddConfigPath("config")
 	err := viper.ReadInConfig()

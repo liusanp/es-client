@@ -1,11 +1,14 @@
-package api
+package controller
 
 import (
 	"es-client/commons"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
+
+type SearchController struct {
+	BaseController
+}
 
 // GetIndices
 // @Summary 获取索引
@@ -14,14 +17,9 @@ import (
 // @Produce json
 // @Success 200 {string} json {"code","msg","data"}
 // @Router /es/getIndices [get]
-func GetIndices(c *gin.Context) {
+func (con BaseController) GetIndices(c *gin.Context) {
 	res := commons.GetIndices()
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "获取索引成功",
-		"data": res,
-	})
+	con.Ok(c, "获取索引成功", res)
 }
 
 // GetMapping
@@ -31,12 +29,7 @@ func GetIndices(c *gin.Context) {
 // @Produce json
 // @Success 200 {string} json {"code","msg","data"}
 // @Router /es/getMapping [get]
-func GetMapping(c *gin.Context) {
+func (con BaseController) GetMapping(c *gin.Context) {
 	res := commons.GetIndexMapping(c.GetString("index"))
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "获取字段成功",
-		"data": res,
-	})
+	con.Ok(c, "获取字段成功", res)
 }

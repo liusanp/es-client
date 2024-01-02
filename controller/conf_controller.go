@@ -1,13 +1,16 @@
-package api
+package controller
 
 import (
 	"es-client/commons"
 	"es-client/models"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
+
+type ConfController struct {
+	BaseController
+}
 
 // GetConfig
 // @Summary 获取es配置
@@ -16,13 +19,9 @@ import (
 // @Produce json
 // @Success 200 {string} json {"code","msg","data"}
 // @Router /conf/get [get]
-func GetConfig(c *gin.Context) {
+func (con ConfController) GetConfig(c *gin.Context) {
 	conf := commons.GetConfig("app.es.conf")
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "获取配置成功",
-		"data": conf,
-	})
+	con.Ok(c, "获取配置成功", conf)
 }
 
 // SetConfig
@@ -33,7 +32,7 @@ func GetConfig(c *gin.Context) {
 // @Param esConf body []models.EsConfig true "EsConfig"
 // @Success 200 {string} json {"code","msg","data"}
 // @Router /conf/set [post]
-func SetConfig(c *gin.Context) {
+func (con ConfController) SetConfig(c *gin.Context) {
 	// conf := commons.GetConfig("app.es.conf")
 	esConf := []models.EsConfig{}
 	if err := c.BindJSON(&esConf); err != nil {
@@ -41,11 +40,7 @@ func SetConfig(c *gin.Context) {
 	}
 	log.Println(esConf)
 	commons.SetConfig("app.es.conf", esConf)
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "设置配置成功",
-		"data": nil,
-	})
+	con.Ok(c, "设置配置成功", nil)
 }
 
 // UseConfig
@@ -56,7 +51,7 @@ func SetConfig(c *gin.Context) {
 // @Param esConf body models.EsConfig true "EsConfig"
 // @Success 200 {string} json {"code","msg","data"}
 // @Router /conf/use [post]
-func UseConfig(c *gin.Context) {
+func (con ConfController) UseConfig(c *gin.Context) {
 	// conf := commons.GetConfig("app.es.conf")
 	esConf := models.EsConfig{}
 	if err := c.BindJSON(&esConf); err != nil {
@@ -65,9 +60,5 @@ func UseConfig(c *gin.Context) {
 	log.Println(esConf)
 	commons.InitESClient(&esConf)
 	info := commons.CheckESClient()
-	c.JSON(http.StatusOK, gin.H{
-		"code": 200,
-		"msg":  "应用配置成功",
-		"data": info,
-	})
+	con.Ok(c, "应用配置成功", info)
 }
