@@ -102,9 +102,18 @@ paths:
       tags:
       - es查询
   /es/getMapping:
-    get:
+    post:
       consumes:
       - application/json
+      parameters:
+      - description: indices
+        in: body
+        name: indices
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
       produces:
       - application/json
       responses:

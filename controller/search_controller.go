@@ -2,6 +2,7 @@ package controller
 
 import (
 	"es-client/commons"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,9 +28,14 @@ func (con BaseController) GetIndices(c *gin.Context) {
 // @Tags es查询
 // @Accept json
 // @Produce json
+// @Param indices body []string true "indices"
 // @Success 200 {string} json {"code","msg","data"}
-// @Router /es/getMapping [get]
+// @Router /es/getMapping [post]
 func (con BaseController) GetMapping(c *gin.Context) {
-	res := commons.GetIndexMapping(c.GetString("index"))
+	indices := []string{}
+	if err := c.BindJSON(&indices); err != nil {
+		log.Println(err)
+	}
+	res := commons.GetIndexMapping(indices)
 	con.Ok(c, "获取字段成功", res)
 }

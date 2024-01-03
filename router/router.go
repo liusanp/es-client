@@ -28,8 +28,8 @@ func Router() *gin.Engine {
 	// 查询
 	esRoute := r.Group("/es")
 	{
-		esRoute.GET("/getMapping", controller.SearchController{}.GetMapping)
 		esRoute.GET("/getIndices", controller.SearchController{}.GetIndices)
+		esRoute.POST("/getMapping", controller.SearchController{}.GetMapping)
 	}
 	return r
 }

@@ -151,7 +151,7 @@ const docTemplate = `{
             }
         },
         "/es/getMapping": {
-            "get": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -162,6 +162,20 @@ const docTemplate = `{
                     "es查询"
                 ],
                 "summary": "获取索引字段",
+                "parameters": [
+                    {
+                        "description": "indices",
+                        "name": "indices",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",

@@ -13,6 +13,7 @@ import (
 
 var es *elasticsearch.Client
 
+// 设置es客户端
 func InitESClient(esConfig *models.EsConfig) {
 	cfg := elasticsearch.Config{
 		Addresses: esConfig.Addresses,
@@ -31,15 +32,14 @@ func decodeResponse(res *esapi.Response, target interface{}) error {
 	if res.IsError() {
 		return fmt.Errorf("error response: %s", res.String())
 	}
-
 	err := json.NewDecoder(res.Body).Decode(target)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
+// 获取es连接信息
 func CheckESClient() map[string]interface{} {
 	res, err := es.Info()
 	if err != nil {
@@ -61,12 +61,11 @@ func CheckESClient() map[string]interface{} {
 	return responseBody
 }
 
+// 获取所有索引
 func GetIndices() []string {
 	// 执行获取所有索引的操作
-	res, err := es.Cat.Indices(
-        es.Cat.Indices.WithContext(context.Background()),
-    )
-	
+	res, err := esapi.CatIndicesRequest{Format: "json"}.Do(context.Background(), es)
+
 	if err != nil {
 		log.Printf("Error getting response: %s", err)
 	}
@@ -92,14 +91,15 @@ func GetIndices() []string {
 	return indexNames
 }
 
-func GetIndexMapping(indexName string) map[string]interface{} {
+// 更加索引名称获取索引字段映射
+func GetIndexMapping(indexNames []string) map[string]interface{} {
 	// 创建 IndicesGetFieldMapping 请求
 	req := esapi.IndicesGetMappingRequest{
-		Index: []string{indexName}, // 设置要获取字段映射的索引
+		Index: indexNames, // 设置要获取字段映射的索引
 	}
 
 	res, err := req.Do(context.Background(), es)
-	
+
 	if err != nil {
 		log.Printf("Error getting response: %s", err)
 	}
