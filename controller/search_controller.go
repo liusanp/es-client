@@ -20,7 +20,7 @@ type SearchController struct {
 func (con BaseController) GetIndices(c *gin.Context) {
 	indices, err := commons.GetIndices()
 	if err != nil {
-		con.Error(c, "获取索引列表失败")
+		con.Error(c, "获取索引列表失败", err.Error())
 		return
 	}
 
@@ -32,14 +32,15 @@ func (con BaseController) GetIndices(c *gin.Context) {
 // @Tags es查询
 // @Accept json
 // @Produce json
+// @Param        index    query     string  false  "索引名称"
 // @Success 200 {string} json{"code","msg","data"}
 // @Router /es/getMappings [get]
 func (con BaseController) GetMappings(c *gin.Context) {
-	index := c.Param("index")
+	index := c.Query("index")
 	mappings, err := commons.GetMappings(index)
 
 	if err != nil {
-		con.Error(c, "获取索引mappings失败")
+		con.Error(c, "获取索引mappings失败", err.Error())
 		return
 	}
 

@@ -49,6 +49,16 @@ const docTemplate = `{
                     "es配置"
                 ],
                 "summary": "添加es配置",
+                "parameters": [
+                    {
+                        "description": "es配置",
+                        "name": "newConfig",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.ESConfig"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -71,6 +81,14 @@ const docTemplate = `{
                     "es配置"
                 ],
                 "summary": "删除es配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "索引名称",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -115,6 +133,16 @@ const docTemplate = `{
                     "es配置"
                 ],
                 "summary": "设置es配置",
+                "parameters": [
+                    {
+                        "description": "es配置",
+                        "name": "newConfig",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.ESConfig"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -159,6 +187,14 @@ const docTemplate = `{
                     "es查询"
                 ],
                 "summary": "获取es索引mappings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "索引名称",
+                        "name": "index",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -166,6 +202,31 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.ESConfig": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "selected": {
+                    "type": "boolean"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
                 }
             }
         }

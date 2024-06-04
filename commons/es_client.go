@@ -6,6 +6,7 @@ import (
 	"errors"
 	"es-client/models"
 	"log"
+	"strings"
 
 	elasticv8 "github.com/elastic/go-elasticsearch/v8"
 	"github.com/olivere/elastic/v6"
@@ -52,30 +53,32 @@ func init() {
 	}
 }
 
-func InitESClient() models.Config {
+func InitESClient() (models.Config, error) {
 	var err error
 	switch currentConfig.Version {
 	case "6":
-		clientV6, err = elastic.NewClient(elastic.SetURL(currentConfig.Address))
+		clientV6, err = elastic.NewClient(
+			elastic.SetURL(currentConfig.Address),
+			elastic.SetBasicAuth(currentConfig.Username, currentConfig.Password))
 	case "7":
-		clientV7, err = elasticv7.NewClient(elasticv7.SetURL(currentConfig.Address))
+		clientV7, err = elasticv7.NewClient(
+			elasticv7.SetURL(currentConfig.Address),
+			elasticv7.SetBasicAuth(currentConfig.Username, currentConfig.Password))
 	case "8":
 		clientV8, err = elasticv8.NewClient(elasticv8.Config{Addresses: []string{currentConfig.Address}})
 	default:
-		log.Fatalf("不支持的ES版本：" + currentConfig.Version)
+		err = errors.New("不支持的ES版本：" + currentConfig.Version)
 	}
-	if err != nil {
-		log.Fatalf("Error creating Elasticsearch client: %s", err)
-	}
-	return config
+	return config, err
 }
 
-func saveConfigs() {
+func saveConfigs() error {
 	viper.Set("app.port", config.App.Port)
 	viper.Set("es.conf", config.ES.Conf)
 	if err := viper.WriteConfig(); err != nil {
-		log.Fatalf("Error writing config file: %s", err)
+		return err
 	}
+	return nil
 }
 
 func GetESConfigs() []models.ESConfig {
@@ -89,44 +92,55 @@ func AddESConfig(newConfig models.ESConfig) string {
 		}
 	}
 	config.ES.Conf = append(config.ES.Conf, newConfig)
-	saveConfigs()
+	err := saveConfigs()
+	if err != nil {
+		return err.Error()
+	}
 	return ""
 }
 
 func DeleteESConfig(name string) string {
 	for i, cfg := range config.ES.Conf {
 		if cfg.Name == name {
-			config.ES.Conf = append(config.ES.Conf[:i], config.ES.Conf[i+1:]...)
 			if currentConfig != nil && currentConfig.Name == name {
-				currentConfig = nil
-				clientV6 = nil
-				clientV7 = nil
-				clientV8 = nil
+				return "已启用配置不能删除"
 			}
-			saveConfigs()
+			config.ES.Conf = append(config.ES.Conf[:i], config.ES.Conf[i+1:]...)
+			err := saveConfigs()
+			if err != nil {
+				return err.Error()
+			}
 			return ""
 		}
 	}
 	return "配置名未找到"
 }
 
-func SelectESConfig(newConfig models.ESConfig) interface{} {
+func SelectESConfig(newConfig models.ESConfig) (interface{}, error) {
 	for i, cfg := range config.ES.Conf {
 		if cfg.Name == newConfig.Name {
 			config.ES.Conf[i].Selected = true
 			currentConfig = &config.ES.Conf[i]
-			InitESClient()
+			_, err := InitESClient()
+			if err != nil {
+				config.ES.Conf[i].Selected = false
+				currentConfig = nil
+				return nil, err
+			}
 		} else {
 			config.ES.Conf[i].Selected = false
 		}
 	}
-	saveConfigs()
-	return currentConfig
+	err := saveConfigs()
+	if err != nil {
+		return nil, err
+	}
+	return currentConfig, nil
 }
 
 func GetIndices() ([]string, error) {
 	if currentConfig == nil {
-		return nil, errors.New("未设置ES配置")
+		return nil, errors.New("未启用ES配置")
 	}
 
 	var indices []string
@@ -142,8 +156,13 @@ func GetIndices() ([]string, error) {
 	default:
 		return nil, errors.New("不支持的ES版本：" + currentConfig.Version)
 	}
-
-	return indices, err
+	var result []string
+	for _, s := range indices {
+		if !strings.HasPrefix(s, ".") {
+			result = append(result, s)
+		}
+	}
+	return result, err
 }
 
 func getIndicesV6() ([]string, error) {

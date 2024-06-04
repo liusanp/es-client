@@ -13,7 +13,11 @@ var (
 )
 
 func run() {
-	config = commons.InitESClient()
+	var err error
+	config, err = commons.InitESClient()
+	if err != nil {
+		log.Fatal(err)
+	}
 	r := router.Router()
 
 	address := fmt.Sprintf(":%d", config.App.Port)

@@ -23,11 +23,11 @@ func (b *BaseController) Ok(c *gin.Context, msg string, data interface{}) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (b *BaseController) Error(c *gin.Context, msg string) {
+func (b *BaseController) Error(c *gin.Context, msg string, data interface{}) {
 	res := Response{
 		Code: 10001,
 		Msg:  msg,
-		Data: nil,
+		Data: data,
 	}
 	c.JSON(http.StatusBadRequest, res)
 }

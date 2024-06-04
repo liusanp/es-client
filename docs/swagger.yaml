@@ -1,3 +1,19 @@
+definitions:
+  models.ESConfig:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      selected:
+        type: boolean
+      username:
+        type: string
+      version:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -19,6 +35,12 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: es配置
+        in: body
+        name: newConfig
+        schema:
+          $ref: '#/definitions/models.ESConfig'
       produces:
       - application/json
       responses:
@@ -33,6 +55,11 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: 索引名称
+        in: query
+        name: name
+        type: string
       produces:
       - application/json
       responses:
@@ -61,6 +88,12 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: es配置
+        in: body
+        name: newConfig
+        schema:
+          $ref: '#/definitions/models.ESConfig'
       produces:
       - application/json
       responses:
@@ -89,6 +122,11 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: 索引名称
+        in: query
+        name: index
+        type: string
       produces:
       - application/json
       responses:
