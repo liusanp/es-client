@@ -1,7 +1,21 @@
+definitions:
+  models.EsConfig:
+    properties:
+      addresses:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
-  /index:
+  /:
     get:
       consumes:
       - application/json
@@ -15,4 +29,99 @@ paths:
       summary: 首页
       tags:
       - 首页
+  /conf/get:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 获取es配置
+      tags:
+      - es配置
+  /conf/set:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: EsConfig
+        in: body
+        name: esConf
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.EsConfig'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 设置es配置
+      tags:
+      - es配置
+  /conf/use:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: EsConfig
+        in: body
+        name: esConf
+        required: true
+        schema:
+          $ref: '#/definitions/models.EsConfig'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 应用es配置
+      tags:
+      - es配置
+  /es/getIndices:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 获取索引
+      tags:
+      - es查询
+  /es/getMapping:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: indices
+        in: body
+        name: indices
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 获取索引字段
+      tags:
+      - es查询
 swagger: "2.0"
