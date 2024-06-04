@@ -2,15 +2,20 @@ package main
 
 import (
 	"es-client/commons"
+	"es-client/models"
 	"es-client/router"
+	"fmt"
 	"log"
-	"strconv"
+)
+
+var (
+	config models.Config
 )
 
 func main() {
-	commons.LoadConfig()
-	port := int(commons.GetConfig("app.port").(int))
-	log.Println("app.port:", port)
+	config = commons.InitESClient()
 	r := router.Router()
-	r.Run(":" + strconv.FormatInt(int64(port), 10))
+
+	address := fmt.Sprintf(":%d", config.App.Port)
+	log.Fatal(r.Run(address))
 }

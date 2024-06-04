@@ -1,4 +1,10 @@
 app:
     port: 8081
-    es:
-        conf:
+es:
+    conf:
+        - name: example
+          version: "6"
+          address: http://localhost:9200
+          username: ""
+          password: ""
+          selected: true
