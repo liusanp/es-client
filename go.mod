@@ -3,11 +3,7 @@ module es-client
 go 1.20
 
 require (
-<<<<<<< HEAD
 	github.com/elastic/go-elasticsearch/v8 v8.8.2
-=======
-	github.com/elastic/go-elasticsearch/v7 v7.17.10
->>>>>>> 218d765ea8b7616bb501308964098f549379a022
 	github.com/gin-gonic/gin v1.9.1
 	github.com/olivere/elastic/v6 v6.2.1
 	github.com/olivere/elastic/v7 v7.0.32
