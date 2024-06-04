@@ -2,7 +2,6 @@ package controller
 
 import (
 	"es-client/commons"
-	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,30 +11,37 @@ type SearchController struct {
 }
 
 // GetIndices
-// @Summary 获取索引
+// @Summary 获取es索引
 // @Tags es查询
 // @Accept json
 // @Produce json
-// @Success 200 {string} json {"code","msg","data"}
+// @Success 200 {string} json{"code","msg","data"}
 // @Router /es/getIndices [get]
 func (con BaseController) GetIndices(c *gin.Context) {
-	res := commons.GetIndices()
-	con.Ok(c, "获取索引成功", res)
+	indices, err := commons.GetIndices()
+	if err != nil {
+		con.Error(c, "获取索引列表失败")
+		return
+	}
+
+	con.Ok(c, "获取索引列表成功", indices)
 }
 
-// GetMapping
-// @Summary 获取索引字段
+// GetMappings
+// @Summary 获取es索引mappings
 // @Tags es查询
 // @Accept json
 // @Produce json
-// @Param indices body []string true "indices"
-// @Success 200 {string} json {"code","msg","data"}
-// @Router /es/getMapping [post]
-func (con BaseController) GetMapping(c *gin.Context) {
-	indices := []string{}
-	if err := c.BindJSON(&indices); err != nil {
-		log.Println(err)
+// @Success 200 {string} json{"code","msg","data"}
+// @Router /es/getMappings [get]
+func (con BaseController) GetMappings(c *gin.Context) {
+	index := c.Param("index")
+	mappings, err := commons.GetMappings(index)
+
+	if err != nil {
+		con.Error(c, "获取索引mappings失败")
+		return
 	}
-	res := commons.GetIndexMapping(indices)
-	con.Ok(c, "获取字段成功", res)
+
+	con.Ok(c, "获取索引mappings成功", mappings)
 }

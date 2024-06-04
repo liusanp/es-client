@@ -1,17 +1,3 @@
-definitions:
-  models.EsConfig:
-    properties:
-      addresses:
-        items:
-          type: string
-        type: array
-      name:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-    type: object
 info:
   contact: {}
 paths:
@@ -29,6 +15,34 @@ paths:
       summary: 首页
       tags:
       - 首页
+  /conf/add:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 添加es配置
+      tags:
+      - es配置
+  /conf/del:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 删除es配置
+      tags:
+      - es配置
   /conf/get:
     get:
       consumes:
@@ -43,19 +57,10 @@ paths:
       summary: 获取es配置
       tags:
       - es配置
-  /conf/set:
+  /conf/use:
     post:
       consumes:
       - application/json
-      parameters:
-      - description: EsConfig
-        in: body
-        name: esConf
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/models.EsConfig'
-          type: array
       produces:
       - application/json
       responses:
@@ -64,27 +69,6 @@ paths:
           schema:
             type: string
       summary: 设置es配置
-      tags:
-      - es配置
-  /conf/use:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: EsConfig
-        in: body
-        name: esConf
-        required: true
-        schema:
-          $ref: '#/definitions/models.EsConfig'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: code","msg","data"}
-          schema:
-            type: string
-      summary: 应用es配置
       tags:
       - es配置
   /es/getIndices:
@@ -98,22 +82,13 @@ paths:
           description: code","msg","data"}
           schema:
             type: string
-      summary: 获取索引
+      summary: 获取es索引
       tags:
       - es查询
-  /es/getMapping:
-    post:
+  /es/getMappings:
+    get:
       consumes:
       - application/json
-      parameters:
-      - description: indices
-        in: body
-        name: indices
-        required: true
-        schema:
-          items:
-            type: string
-          type: array
       produces:
       - application/json
       responses:
@@ -121,7 +96,7 @@ paths:
           description: code","msg","data"}
           schema:
             type: string
-      summary: 获取索引字段
+      summary: 获取es索引mappings
       tags:
       - es查询
 swagger: "2.0"

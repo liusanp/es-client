@@ -29,7 +29,7 @@ func (b *BaseController) Error(c *gin.Context, msg string) {
 		Msg:  msg,
 		Data: nil,
 	}
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusBadRequest, res)
 }
 
 func (b *BaseController) Return(c *gin.Context, code int, msg string, data interface{}) {

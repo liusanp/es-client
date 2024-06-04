@@ -37,6 +37,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/conf/add": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es配置"
+                ],
+                "summary": "添加es配置",
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/conf/del": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es配置"
+                ],
+                "summary": "删除es配置",
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/conf/get": {
             "get": {
                 "consumes": [
@@ -59,42 +103,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/conf/set": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "es配置"
-                ],
-                "summary": "设置es配置",
-                "parameters": [
-                    {
-                        "description": "EsConfig",
-                        "name": "esConf",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.EsConfig"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "code\",\"msg\",\"data\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/conf/use": {
             "post": {
                 "consumes": [
@@ -106,18 +114,7 @@ const docTemplate = `{
                 "tags": [
                     "es配置"
                 ],
-                "summary": "应用es配置",
-                "parameters": [
-                    {
-                        "description": "EsConfig",
-                        "name": "esConf",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.EsConfig"
-                        }
-                    }
-                ],
+                "summary": "设置es配置",
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -139,7 +136,7 @@ const docTemplate = `{
                 "tags": [
                     "es查询"
                 ],
-                "summary": "获取索引",
+                "summary": "获取es索引",
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -150,8 +147,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/es/getMapping": {
-            "post": {
+        "/es/getMappings": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
@@ -161,21 +158,7 @@ const docTemplate = `{
                 "tags": [
                     "es查询"
                 ],
-                "summary": "获取索引字段",
-                "parameters": [
-                    {
-                        "description": "indices",
-                        "name": "indices",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                ],
+                "summary": "获取es索引mappings",
                 "responses": {
                     "200": {
                         "description": "code\",\"msg\",\"data\"}",
@@ -183,28 +166,6 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "models.EsConfig": {
-            "type": "object",
-            "properties": {
-                "addresses": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         }

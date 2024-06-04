@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"es-client/models"
-	"fmt"
 	"log"
 
 	elasticv8 "github.com/elastic/go-elasticsearch/v8"
