@@ -19,7 +19,7 @@ func Router() *gin.Engine {
 	// 首页
 	r.GET("/", controller.IndexController{}.GetIndex)
 	// 配置
-	confRoute := r.Group("/conf")
+	confRoute := r.Group("/ec/conf")
 	{
 		confRoute.GET("/get", controller.ConfController{}.GetConfig)
 		confRoute.POST("/add", controller.ConfController{}.AddConfig)
@@ -27,7 +27,7 @@ func Router() *gin.Engine {
 		confRoute.POST("/use", controller.ConfController{}.SelectConfig)
 	}
 	// 查询
-	esRoute := r.Group("/es")
+	esRoute := r.Group("/ec/es")
 	{
 		esRoute.GET("/getIndices", controller.SearchController{}.GetIndices)
 		esRoute.GET("/getMappings", controller.SearchController{}.GetMappings)

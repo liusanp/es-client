@@ -37,7 +37,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/conf/add": {
+        "/ec/conf/add": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -69,7 +69,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/conf/del": {
+        "/ec/conf/del": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -99,7 +99,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/conf/get": {
+        "/ec/conf/get": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -121,7 +121,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/conf/use": {
+        "/ec/conf/use": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -153,7 +153,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/es/getIndices": {
+        "/ec/es/getIndices": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -175,7 +175,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/es/getMappings": {
+        "/ec/es/getMappings": {
             "get": {
                 "consumes": [
                     "application/json"

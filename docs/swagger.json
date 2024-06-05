@@ -26,7 +26,7 @@
                 }
             }
         },
-        "/conf/add": {
+        "/ec/conf/add": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -58,7 +58,7 @@
                 }
             }
         },
-        "/conf/del": {
+        "/ec/conf/del": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -88,7 +88,7 @@
                 }
             }
         },
-        "/conf/get": {
+        "/ec/conf/get": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -110,7 +110,7 @@
                 }
             }
         },
-        "/conf/use": {
+        "/ec/conf/use": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -142,7 +142,7 @@
                 }
             }
         },
-        "/es/getIndices": {
+        "/ec/es/getIndices": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -164,7 +164,7 @@
                 }
             }
         },
-        "/es/getMappings": {
+        "/ec/es/getMappings": {
             "get": {
                 "consumes": [
                     "application/json"

@@ -16,7 +16,7 @@ type SearchController struct {
 // @Accept json
 // @Produce json
 // @Success 200 {string} json{"code","msg","data"}
-// @Router /es/getIndices [get]
+// @Router /ec/es/getIndices [get]
 func (con BaseController) GetIndices(c *gin.Context) {
 	indices, err := commons.GetIndices()
 	if err != nil {
@@ -34,7 +34,7 @@ func (con BaseController) GetIndices(c *gin.Context) {
 // @Produce json
 // @Param        index    query     string  false  "索引名称"
 // @Success 200 {string} json{"code","msg","data"}
-// @Router /es/getMappings [get]
+// @Router /ec/es/getMappings [get]
 func (con BaseController) GetMappings(c *gin.Context) {
 	index := c.Query("index")
 	mappings, err := commons.GetMappings(index)

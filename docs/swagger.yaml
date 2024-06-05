@@ -31,7 +31,7 @@ paths:
       summary: 首页
       tags:
       - 首页
-  /conf/add:
+  /ec/conf/add:
     post:
       consumes:
       - application/json
@@ -51,7 +51,7 @@ paths:
       summary: 添加es配置
       tags:
       - es配置
-  /conf/del:
+  /ec/conf/del:
     post:
       consumes:
       - application/json
@@ -70,7 +70,7 @@ paths:
       summary: 删除es配置
       tags:
       - es配置
-  /conf/get:
+  /ec/conf/get:
     get:
       consumes:
       - application/json
@@ -84,7 +84,7 @@ paths:
       summary: 获取es配置
       tags:
       - es配置
-  /conf/use:
+  /ec/conf/use:
     post:
       consumes:
       - application/json
@@ -104,7 +104,7 @@ paths:
       summary: 设置es配置
       tags:
       - es配置
-  /es/getIndices:
+  /ec/es/getIndices:
     get:
       consumes:
       - application/json
@@ -118,7 +118,7 @@ paths:
       summary: 获取es索引
       tags:
       - es查询
-  /es/getMappings:
+  /ec/es/getMappings:
     get:
       consumes:
       - application/json
