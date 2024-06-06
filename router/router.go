@@ -2,6 +2,7 @@ package router
 
 import (
 	"es-client/controller"
+	"es-client/public"
 
 	docs "es-client/docs"
 
@@ -12,12 +13,11 @@ import (
 
 func Router() *gin.Engine {
 	r := gin.Default()
-
+	// 静态资源
+	public.HandleStatic(&r.RouterGroup, r.NoRoute)
 	// swagger
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	// 首页
-	r.GET("/", controller.IndexController{}.GetIndex)
 	// 配置
 	confRoute := r.Group("/ec/conf")
 	{
