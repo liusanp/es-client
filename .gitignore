@@ -36,3 +36,4 @@ go.work
 test
 public/dist/*
 !public/dist/.keep
+build
