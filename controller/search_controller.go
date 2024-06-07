@@ -2,6 +2,7 @@ package controller
 
 import (
 	"es-client/commons"
+	"sort"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,7 @@ func (con BaseController) GetIndices(c *gin.Context) {
 		con.Error(c, "获取索引列表失败", err.Error())
 		return
 	}
+	sort.Strings(indices)
 
 	con.Ok(c, "获取索引列表成功", indices)
 }
@@ -43,6 +45,43 @@ func (con BaseController) GetMappings(c *gin.Context) {
 		con.Error(c, "获取索引mappings失败", err.Error())
 		return
 	}
+	r := mappings[index].(map[string]interface{})["mappings"].(map[string]interface{})["index"].(map[string]interface{})["properties"].(map[string]interface{})
+	result := make([]map[string]interface{}, 0)
+	keys := make([]string, 0)
+	for k, _ := range r {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
 
-	con.Ok(c, "获取索引mappings成功", mappings)
+	for _, k := range keys {
+		v := r[k].(map[string]interface{})
+		nodeType := ""
+		if v["type"] != nil {
+			nodeType = v["type"].(string)
+		} else if v["properties"] != nil {
+			nodeType = "nested"
+		}
+		pNode := make(map[string]interface{})
+		pNode["value"] = k
+		pNode["label"] = k
+		pNode["type"] = nodeType
+		if nodeType == "nested" {
+			props := v["properties"].(map[string]interface{})
+			pNode["children"] = make([]map[string]interface{}, 0)
+			for k1, sv1 := range props {
+				v1 := sv1.(map[string]interface{})
+				pNode["children"] = append(pNode["children"].([]map[string]interface{}), map[string]interface{}{
+					"value": k1,
+					"label": k1,
+					"type":  v1["type"],
+					"children": make([]interface{}, 0),
+				})
+			}
+		} else {
+			pNode["children"] = make([]interface{}, 0)
+		}
+		result = append(result, pNode)
+	}
+
+	con.Ok(c, "获取索引mappings成功", result)
 }
