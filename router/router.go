@@ -31,6 +31,8 @@ func Router() *gin.Engine {
 	{
 		esRoute.GET("/getIndices", controller.SearchController{}.GetIndices)
 		esRoute.GET("/getMappings", controller.SearchController{}.GetMappings)
+		esRoute.POST("/queryES", controller.SearchController{}.QueryES)
+		esRoute.POST("/exportES", controller.SearchController{}.ExportES)
 	}
 	return r
 }

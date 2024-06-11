@@ -1,16 +1,14 @@
 package models
 
-type Bool struct {
-	// must should
-	Type string
-	// 查询类型
-	SearchType  string
-	SearchField string
-	SearchValue interface{}
+type EsSearch struct {
+	PageSize    int                    `json:"pageSize"`
+	CurrentPage int                    `json:"currentPage"`
+	QueryJson   map[string]interface{} `json:"queryJson"`
+	Index		string					`json:"index"`
 }
 
-type EsSearch struct {
-	PageSize int
-	CurrPage int
-	Querys   []Bool
+// ResponseBody represents the structure of the outgoing response
+type EsData struct {
+	Total int			`json:"total"`
+	Data  []interface{} `json:"data"`
 }

@@ -153,6 +153,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/ec/es/exportES": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es查询"
+                ],
+                "summary": "导出es",
+                "parameters": [
+                    {
+                        "description": "es查询",
+                        "name": "queryData",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.EsSearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/ec/es/getIndices": {
             "get": {
                 "consumes": [
@@ -204,6 +236,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ec/es/queryES": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "es查询"
+                ],
+                "summary": "查询es",
+                "parameters": [
+                    {
+                        "description": "es查询",
+                        "name": "queryData",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.EsSearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "code\",\"msg\",\"data\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -227,6 +291,24 @@ const docTemplate = `{
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "models.EsSearch": {
+            "type": "object",
+            "properties": {
+                "currentPage": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "string"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "queryJson": {
+                    "type": "object",
+                    "additionalProperties": true
                 }
             }
         }

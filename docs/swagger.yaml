@@ -14,6 +14,18 @@ definitions:
       version:
         type: string
     type: object
+  models.EsSearch:
+    properties:
+      currentPage:
+        type: integer
+      index:
+        type: string
+      pageSize:
+        type: integer
+      queryJson:
+        additionalProperties: true
+        type: object
+    type: object
 info:
   contact: {}
 paths:
@@ -104,6 +116,26 @@ paths:
       summary: 设置es配置
       tags:
       - es配置
+  /ec/es/exportES:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: es查询
+        in: body
+        name: queryData
+        schema:
+          $ref: '#/definitions/models.EsSearch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 导出es
+      tags:
+      - es查询
   /ec/es/getIndices:
     get:
       consumes:
@@ -135,6 +167,26 @@ paths:
           schema:
             type: string
       summary: 获取es索引mappings
+      tags:
+      - es查询
+  /ec/es/queryES:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: es查询
+        in: body
+        name: queryData
+        schema:
+          $ref: '#/definitions/models.EsSearch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: code","msg","data"}
+          schema:
+            type: string
+      summary: 查询es
       tags:
       - es查询
 swagger: "2.0"

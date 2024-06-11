@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"es-client/models"
+	"fmt"
 	"log"
 	"strings"
 
@@ -253,4 +254,146 @@ func getMappingsV8(index string) (map[string]interface{}, error) {
 	}
 
 	return mappings, nil
+}
+
+func QueryES(requestBody *models.EsSearch) (*models.EsData, error) {
+	if currentConfig == nil {
+		return nil, errors.New("未设置ES配置")
+	}
+	var res *models.EsData
+	var err error
+
+	switch currentConfig.Version {
+	case "6":
+		res, err = queryESV6(requestBody)
+	case "7":
+		res, err = queryESV7(requestBody)
+	case "8":
+		res, err = queryESV8(requestBody)
+	default:
+		return nil, errors.New("不支持的ES版本：" + currentConfig.Version)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func queryESV6(requestBody *models.EsSearch) (*models.EsData, error) {
+	from := (requestBody.CurrentPage - 1) * requestBody.PageSize
+	if from > 1000 {
+		from = 1000
+	}
+	requestBody.QueryJson["from"] = from
+	requestBody.QueryJson["size"] = requestBody.PageSize
+	searchResult, err := clientV6.Search().
+		Index(requestBody.Index).
+		Source(requestBody.QueryJson).
+		Do(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	response := models.EsData{
+		Total: int(searchResult.TotalHits()),
+		Data:  make([]interface{}, 0),
+	}
+
+	for _, hit := range searchResult.Hits.Hits {
+		var doc map[string]interface{}
+		if err := json.Unmarshal(*hit.Source, &doc); err != nil {
+			return nil, err
+		} else {
+			response.Data = append(response.Data, doc)
+		}
+	}
+
+	return &response, nil
+}
+
+func queryESV7(requestBody *models.EsSearch) (*models.EsData, error) {
+	from := (requestBody.CurrentPage - 1) * requestBody.PageSize
+	if from > 1000 {
+		from = 1000
+	}
+	requestBody.QueryJson["from"] = from
+	requestBody.QueryJson["size"] = requestBody.PageSize
+	searchResult, err := clientV7.Search().
+		Index(requestBody.Index).
+		Source(requestBody.QueryJson).
+		Do(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	response := models.EsData{
+		Total: int(searchResult.TotalHits()),
+		Data:  make([]interface{}, 0),
+	}
+
+	for _, hit := range searchResult.Hits.Hits {
+		var doc map[string]interface{}
+		if err := json.Unmarshal(hit.Source, &doc); err != nil {
+			return nil, err
+		} else {
+			response.Data = append(response.Data, doc)
+		}
+	}
+
+	return &response, nil
+}
+
+func queryESV8(requestBody *models.EsSearch) (*models.EsData, error) {
+	from := (requestBody.CurrentPage - 1) * requestBody.PageSize
+	if from > 1000 {
+		from = 1000
+	}
+	searchBody := fmt.Sprintf(`{
+        "from": %d,
+        "size": %d,
+        %s
+    }`, from, requestBody.PageSize, requestBody.QueryJson)
+
+	// 执行查询
+	res, err := clientV8.Search(
+		clientV8.Search.WithContext(context.Background()),
+		clientV8.Search.WithIndex(requestBody.Index),
+		clientV8.Search.WithBody(strings.NewReader(searchBody)),
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	// 处理查询结果
+	var searchResult struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+			Hits []struct {
+				Source json.RawMessage `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+
+	response := models.EsData{
+		Total: searchResult.Hits.Total.Value,
+		Data:  make([]interface{}, 0),
+	}
+
+	for _, hit := range searchResult.Hits.Hits {
+		var doc map[string]interface{}
+		if err := json.Unmarshal(hit.Source, &doc); err != nil {
+			return nil, err
+		} else {
+			response.Data = append(response.Data, doc)
+		}
+	}
+
+	return &response, nil
 }
