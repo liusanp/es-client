@@ -82,7 +82,7 @@ func SortMappings(mappings map[string]interface{}, index string) []map[string]in
 			for k1, sv1 := range props {
 				v1 := sv1.(map[string]interface{})
 				pNode["children"] = append(pNode["children"].([]map[string]interface{}), map[string]interface{}{
-					"value":    k1,
+					"value":    k + "." + k1,
 					"label":    k1,
 					"type":     v1["type"],
 					"children": make([]interface{}, 0),
