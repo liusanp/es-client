@@ -3,6 +3,7 @@ package controller
 import (
 	"es-client/commons"
 	"es-client/models"
+	"os"
 	"sort"
 	"strconv"
 	"time"
@@ -140,7 +141,8 @@ func (con SearchController) ExportES(c *gin.Context) {
 	}
 	f := excelize.NewFile()
 	sheet := "result"
-	f.NewSheet(sheet)
+	// f.NewSheet(sheet)
+	f.SetSheetName("Sheet1", sheet)
 	mappings, _ := commons.GetMappings(queryData.Index)
 	headers := SortMappings(mappings, queryData.Index)
 	for i, header := range headers {
@@ -155,19 +157,32 @@ func (con SearchController) ExportES(c *gin.Context) {
 			f.SetCellValue(sheet, cell, hitMap[header["value"].(string)])
 		}
 	}
-
-	buffer, err := f.WriteToBuffer()
-	if err != nil {
+	dirPath := "./exportData/"
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		// 如果文件夹不存在，则创建文件夹
+		err := os.Mkdir(dirPath, os.ModePerm)
+		con.Error(c, "导出文件夹创建失败", err.Error())
+		return
+	}
+	timestampStr := strconv.FormatInt(time.Now().Unix(), 10)
+	filename := dirPath + timestampStr + ".xlsx"
+	if err := f.SaveAs(filename); err != nil {
 		con.Error(c, "导出失败", err.Error())
 		return
 	}
 
-	timestampStr := strconv.FormatInt(time.Now().Unix(), 10)
-	filename := timestampStr + ".xlsx"
-	// c.Writer.Header().Add("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-	c.Writer.Header().Add("Content-Type", "application/octet-stream")
-	c.Writer.Header().Add("Content-Disposition", "attachment; filename=" + filename)
-	// c.Writer.Header().Add("Content-Length", strconv.Itoa(buffer.Len()))
-	c.Writer.Write(buffer.Bytes())
-	con.Ok(c, "导出成功", res)
+	// buffer, err := f.WriteToBuffer()
+	// if err != nil {
+	// 	con.Error(c, "导出失败", err.Error())
+	// 	return
+	// }
+
+	// timestampStr := strconv.FormatInt(time.Now().Unix(), 10)
+	// filename := timestampStr + ".xlsx"
+	// // c.Writer.Header().Add("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	// c.Writer.Header().Add("Content-Type", "application/octet-stream")
+	// c.Writer.Header().Add("Content-Disposition", "attachment; filename=" + filename)
+	// // c.Writer.Header().Add("Content-Length", strconv.Itoa(buffer.Len()))
+	// c.Writer.Write(buffer.Bytes())
+	con.Ok(c, "导出成功，文件路径："+filename, nil)
 }

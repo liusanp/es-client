@@ -37,3 +37,4 @@ test
 public/dist/*
 !public/dist/.keep
 build
+exportData
