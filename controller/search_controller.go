@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"es-client/commons"
 	"es-client/models"
 	"os"
@@ -147,14 +148,19 @@ func (con SearchController) ExportES(c *gin.Context) {
 	headers := SortMappings(mappings, queryData.Index)
 	for i, header := range headers {
 		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
-		f.SetCellValue(sheet, cell, header)
+		f.SetCellValue(sheet, cell, header["value"].(string))
 	}
 
 	for i, hit := range res.Data {
 		hitMap := hit.(map[string]interface{})
 		for j, header := range headers {
 			cell, _ := excelize.CoordinatesToCellName(j+1, i+2)
-			f.SetCellValue(sheet, cell, hitMap[header["value"].(string)])
+			b, err := json.Marshal(hitMap[header["value"].(string)])
+			if err != nil {
+				f.SetCellValue(sheet, cell, hitMap[header["value"].(string)])
+			} else {
+				f.SetCellValue(sheet, cell, b)
+			}
 		}
 	}
 	dirPath := "./exportData/"
