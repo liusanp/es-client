@@ -10,3 +10,9 @@ swag init
 # 启动
 go run main.go
 ```
+
+## 打包
+
+```shell
+go build -o build/es-client.exe
+```
