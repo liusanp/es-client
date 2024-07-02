@@ -277,6 +277,9 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "exportLimit": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },

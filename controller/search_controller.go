@@ -89,6 +89,18 @@ func SortMappings(mappings map[string]interface{}, index string) []map[string]in
 					"children": make([]interface{}, 0),
 				})
 			}
+		} else if nodeType == "text" && v["fields"] != nil {
+			props := v["fields"].(map[string]interface{})
+			pNode["children"] = make([]interface{}, 0)
+			for k1, sv1 := range props {
+				v1 := sv1.(map[string]interface{})
+				cNode := make(map[string]interface{})
+				cNode["value"] = k + "." + k1
+				cNode["label"] = k + "." + k1
+				cNode["type"] = v1["type"].(string)
+				cNode["children"] = make([]interface{}, 0)
+				result = append(result, cNode)
+			}
 		} else {
 			pNode["children"] = make([]interface{}, 0)
 		}
@@ -134,7 +146,7 @@ func (con SearchController) ExportES(c *gin.Context) {
 		return
 	}
 	queryData.CurrentPage = 1
-	queryData.PageSize = 10000
+	queryData.PageSize = commons.CurrentConfig.ExportLimit
 	res, err := commons.QueryES(&queryData)
 	if err != nil {
 		con.Error(c, "导出失败", err.Error())

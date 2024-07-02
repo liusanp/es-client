@@ -5,6 +5,7 @@ es:
         - name: example
           version: "6"
           address: http://localhost:9200
-          username: ""
+          username: 
           password: ""
-          selected: true
+          selected: false
+          exportLimit: 10000

@@ -38,6 +38,7 @@ func (con ConfController) AddConfig(c *gin.Context) {
 		return
 	}
 	newConfig.Selected = false
+	newConfig.ExportLimit = 10000
 	err := commons.AddESConfig(newConfig)
 	if err != "" {
 		con.Error(c, "添加配置失败", err)

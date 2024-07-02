@@ -17,7 +17,7 @@ import (
 
 var (
 	config        models.Config
-	currentConfig *models.ESConfig
+	CurrentConfig *models.ESConfig
 
 	clientV6 *elastic.Client
 	clientV7 *elasticv7.Client
@@ -47,7 +47,7 @@ func init() {
 		// Set currentConfig if a config is selected
 		for i := range config.ES.Conf {
 			if config.ES.Conf[i].Selected {
-				currentConfig = &config.ES.Conf[i]
+				CurrentConfig = &config.ES.Conf[i]
 				break
 			}
 		}
@@ -56,19 +56,19 @@ func init() {
 
 func InitESClient() (models.Config, error) {
 	var err error
-	switch currentConfig.Version {
+	switch CurrentConfig.Version {
 	case "6":
 		clientV6, err = elastic.NewClient(
-			elastic.SetURL(currentConfig.Address),
-			elastic.SetBasicAuth(currentConfig.Username, currentConfig.Password))
+			elastic.SetURL(CurrentConfig.Address),
+			elastic.SetBasicAuth(CurrentConfig.Username, CurrentConfig.Password))
 	case "7":
 		clientV7, err = elasticv7.NewClient(
-			elasticv7.SetURL(currentConfig.Address),
-			elasticv7.SetBasicAuth(currentConfig.Username, currentConfig.Password))
+			elasticv7.SetURL(CurrentConfig.Address),
+			elasticv7.SetBasicAuth(CurrentConfig.Username, CurrentConfig.Password))
 	case "8":
-		clientV8, err = elasticv8.NewClient(elasticv8.Config{Addresses: []string{currentConfig.Address}})
+		clientV8, err = elasticv8.NewClient(elasticv8.Config{Addresses: []string{CurrentConfig.Address}})
 	default:
-		err = errors.New("不支持的ES版本：" + currentConfig.Version)
+		err = errors.New("不支持的ES版本：" + CurrentConfig.Version)
 	}
 	return config, err
 }
@@ -103,7 +103,7 @@ func AddESConfig(newConfig models.ESConfig) string {
 func DeleteESConfig(name string) string {
 	for i, cfg := range config.ES.Conf {
 		if cfg.Name == name {
-			if currentConfig != nil && currentConfig.Name == name {
+			if CurrentConfig != nil && CurrentConfig.Name == name {
 				return "已启用配置不能删除"
 			}
 			config.ES.Conf = append(config.ES.Conf[:i], config.ES.Conf[i+1:]...)
@@ -121,11 +121,11 @@ func SelectESConfig(newConfig models.ESConfig) (interface{}, error) {
 	for i, cfg := range config.ES.Conf {
 		if cfg.Name == newConfig.Name {
 			config.ES.Conf[i].Selected = true
-			currentConfig = &config.ES.Conf[i]
+			CurrentConfig = &config.ES.Conf[i]
 			_, err := InitESClient()
 			if err != nil {
 				config.ES.Conf[i].Selected = false
-				currentConfig = nil
+				CurrentConfig = nil
 				return nil, err
 			}
 		} else {
@@ -136,18 +136,18 @@ func SelectESConfig(newConfig models.ESConfig) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return currentConfig, nil
+	return CurrentConfig, nil
 }
 
 func GetIndices() ([]string, error) {
-	if currentConfig == nil {
+	if CurrentConfig == nil {
 		return nil, errors.New("未启用ES配置")
 	}
 
 	var indices []string
 	var err error
 
-	switch currentConfig.Version {
+	switch CurrentConfig.Version {
 	case "6":
 		indices, err = getIndicesV6()
 	case "7":
@@ -155,7 +155,7 @@ func GetIndices() ([]string, error) {
 	case "8":
 		indices, err = getIndicesV8()
 	default:
-		return nil, errors.New("不支持的ES版本：" + currentConfig.Version)
+		return nil, errors.New("不支持的ES版本：" + CurrentConfig.Version)
 	}
 	var result []string
 	for _, s := range indices {
@@ -204,14 +204,14 @@ func getIndicesV8() ([]string, error) {
 }
 
 func GetMappings(index string) (map[string]interface{}, error) {
-	if currentConfig == nil {
+	if CurrentConfig == nil {
 		return nil, errors.New("未设置ES配置")
 	}
 
 	var mappings map[string]interface{}
 	var err error
 
-	switch currentConfig.Version {
+	switch CurrentConfig.Version {
 	case "6":
 		mappings, err = getMappingsV6(index)
 	case "7":
@@ -219,7 +219,7 @@ func GetMappings(index string) (map[string]interface{}, error) {
 	case "8":
 		mappings, err = getMappingsV8(index)
 	default:
-		return nil, errors.New("不支持的ES版本：" + currentConfig.Version)
+		return nil, errors.New("不支持的ES版本：" + CurrentConfig.Version)
 	}
 
 	return mappings, err
@@ -257,13 +257,13 @@ func getMappingsV8(index string) (map[string]interface{}, error) {
 }
 
 func QueryES(requestBody *models.EsSearch) (*models.EsData, error) {
-	if currentConfig == nil {
+	if CurrentConfig == nil {
 		return nil, errors.New("未设置ES配置")
 	}
 	var res *models.EsData
 	var err error
 
-	switch currentConfig.Version {
+	switch CurrentConfig.Version {
 	case "6":
 		res, err = queryESV6(requestBody)
 	case "7":
@@ -271,7 +271,7 @@ func QueryES(requestBody *models.EsSearch) (*models.EsData, error) {
 	case "8":
 		res, err = queryESV8(requestBody)
 	default:
-		return nil, errors.New("不支持的ES版本：" + currentConfig.Version)
+		return nil, errors.New("不支持的ES版本：" + CurrentConfig.Version)
 	}
 
 	if err != nil {

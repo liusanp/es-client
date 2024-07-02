@@ -5,12 +5,13 @@ type AppConfig struct {
 }
 
 type ESConfig struct {
-	Name     string `json:"name" yaml:"name"`
-	Version  string `json:"version" yaml:"version"`
-	Address  string `json:"address" yaml:"address"`
-	Username string `json:"username" yaml:"username"`
-	Password string `json:"password" yaml:"password"`
-	Selected bool   `json:"selected" yaml:"selected"`
+	Name        string `json:"name" yaml:"name"`
+	Version     string `json:"version" yaml:"version"`
+	Address     string `json:"address" yaml:"address"`
+	Username    string `json:"username" yaml:"username"`
+	Password    string `json:"password" yaml:"password"`
+	Selected    bool   `json:"selected" yaml:"selected"`
+	ExportLimit int    `json:"exportLimit" yaml:"exportLimit"`
 }
 
 type Config struct {
