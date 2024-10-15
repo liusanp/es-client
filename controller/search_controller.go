@@ -60,7 +60,7 @@ func SortMappings(mappings map[string]interface{}, index string) []map[string]in
 	r := mappings[index].(map[string]interface{})["mappings"].(map[string]interface{})["index"].(map[string]interface{})["properties"].(map[string]interface{})
 	result := make([]map[string]interface{}, 0)
 	keys := make([]string, 0)
-	for k, _ := range r {
+	for k := range r {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
