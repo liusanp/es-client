@@ -47,6 +47,30 @@ func (con ConfController) AddConfig(c *gin.Context) {
 	con.Ok(c, "添加配置成功", newConfig)
 }
 
+// UpdateConfig
+// @Summary 修改es配置
+// @Tags es配置
+// @Accept json
+// @Produce json
+// @Param        newConfig    body     models.ESConfig  false  "es配置"
+// @Success 200 {string} json{"code","msg","data"}
+// @Router /ec/conf/update [post]
+func (con ConfController) UpdateConfig(c *gin.Context) {
+	var newConfig models.ESConfig
+	if err := c.ShouldBindJSON(&newConfig); err != nil {
+		con.Error(c, "修改配置失败", err.Error())
+		return
+	}
+	newConfig.Selected = false
+	newConfig.ExportLimit = 10000
+	err := commons.AddESConfig(newConfig)
+	if err != "" {
+		con.Error(c, "修改配置失败", err)
+		return
+	}
+	con.Ok(c, "修改配置成功", newConfig)
+}
+
 // DeleteConfig
 // @Summary 删除es配置
 // @Tags es配置
